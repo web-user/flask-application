@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <div class="container">
+		<form role="form" method="POST">
+			<div class="form-group">
+				<label for="inputName" class="control-label">Name</label>
+				<input type="text" class="form-control" name="name" value="{% if current_user.name %} {{ current_user.name }}{%endif%}">
+			</div>
+			<div class="form-group">
+				<label for="inputName" class="control-label">Location</label>
+				<input type="text" class="form-control" name="location" value="{% if current_user.location %} {{ current_user.location }}{%endif%}">
+			</div>
+			<div class="form-group">
+				<label for="inputName" class="control-label">About Me</label>
+				<textarea class="form-control" name="about_me">{% if current_user.about_me %} {{ current_user.about_me }} {%endif%}</textarea>
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</div>
+		</form>
+    </div>
+{% endblock %}
