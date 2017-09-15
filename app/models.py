@@ -293,6 +293,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    taxonomy_id = db.Column(db.Integer, db.ForeignKey('taxonomy.id'))
 
     @staticmethod
     def generate_fake(count=100):
@@ -341,6 +342,31 @@ class Post(db.Model):
 
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
+
+class Taxonomy(db.Model):
+    __tablename__ = 'taxonomy'
+    id = db.Column(db.Integer, primary_key = True)
+    category  = db.Column(db.Text)
+    tag = db.Column(db.Text)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
+    def to_json(self):
+        json_taxonomy = {
+            'url': url_for('api.get_taxonomy', id=self.id, _external=True),
+            'post': url_for('api.get_post', id=self.post_id, _external=True),
+            'category': self.category,
+            'tag': self.tag,
+            'author': url_for('api.get_user', id=self.author_id, _external=True),
+        }
+        return json_taxonomy
+    @staticmethod
+    def from_json(json_taxonomy):
+        category = json_taxonomy.get('category')
+        if category is None or category == '':
+            raise ValidationError('comment does not have a body')
+        return Taxonomy(category=category)
+
+db.event.listen(Taxonomy.category, 'set', Taxonomy.tag)
 
 
 class Comment(db.Model):

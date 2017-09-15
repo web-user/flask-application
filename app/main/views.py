@@ -175,12 +175,6 @@ def show_followed():
 	return resp
 
 
-
-
-
-
-
-
 @main.route('/unfollow/<username>')
 @login_required
 @permission_required(Permission.FOLLOW)

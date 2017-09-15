@@ -7,6 +7,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
+			{{current_user.can(Permission.WRITE_ARTICLES)}}
 				{% if current_user.can(Permission.WRITE_ARTICLES) %}
 
 					<form role="form" method="POST" data-toggle="validator">
