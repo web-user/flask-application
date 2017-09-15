@@ -10,10 +10,14 @@ class Config:
     MAIL_PORT = 25
     MAIL_USE_TLS = True
     MAIL_USERNAME = 'apikey'
-    MAIL_PASSWORD = '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'
+    MAIL_PASSWORD = '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'
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'volodymyr.nko@gmail.com'
+    FLASKY_MAIL_SENDER = 'pivnychenko.light.it@gmail.com'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+    FLASKY_POSTS_PER_PAGE = 20
+    FLASKY_FOLLOWERS_PER_PAGE = 50
+    FLASKY_COMMENTS_PER_PAGE = 30
+    FLASKY_SLOW_DB_QUERY_TIME=0.5
 
     @staticmethod
     def init_app(app):

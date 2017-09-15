@@ -13,6 +13,24 @@
 				</a>
 			</div>
 			<div class="post-body">{{ post.body }}</div>
+			<div class="post-footer">
+				{% if current_user == post.author %}
+					<a href="{{ url_for('.edit', id=post.id) }}">
+						<span class="label label-primary">Edit</span>
+					</a>
+				{% elif current_user.is_administrator() %}
+					<a href="{{ url_for('.edit', id=post.id) }}">
+						<span class="label label-danger">Edit [Admin]</span>
+					</a>
+				{% endif %}
+				{% if post.id != id %}
+					<a href="{{ url_for('.post', id=post.id) }}">
+						<span class="label label-default">{{id}}{% if post.id == id %} der post {%endif%}Permalink</span>
+					</a>
+				{% endif %}
+
+
+			</div>
 		</li>
 	{% endfor %}
 </ul>
