@@ -44,7 +44,11 @@
 						<li>
 							<a href="/taxonomy">Taxonomy</a>
 						</li>
+						{% if current_user.can(Permission.MODERATE_COMMENTS) %}
+							<li><a href="{{ url_for('main.moderate') }}">Moderate Comments</a></li>
+						{% endif %}
 					{% endif %}
+
 
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

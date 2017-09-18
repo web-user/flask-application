@@ -28,7 +28,11 @@
 						<span class="label label-default">{{id}}{% if post.id == id %} der post {%endif%}Permalink</span>
 					</a>
 				{% endif %}
-
+				<a href="{{ url_for('.post', id=post.id) }}#comments">
+					<span class="label label-primary">
+					{{ post.comments.count() }} Comments
+					</span>
+				</a>
 
 			</div>
 		</li>
