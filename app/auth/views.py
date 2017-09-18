@@ -27,14 +27,14 @@ def unconfirmed():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-	if request.method == 'POST':
-		user = User.query.filter_by(email = request.form['email']).first()
-		if user is not None and user.verify_password(request.form['password']):
-			login_user(user, request.form['remember_me'])
-			return redirect(url_for('main.index'))
-		flash('Invalid username or password.')
+    if request.method == 'POST':
+        user = User.query.filter_by(email = request.form['email']).first()
+        if user is not None and user.verify_password(request.form['password']):
+            login_user(user, request.form['remember_me'])
+            return redirect(url_for('main.index'))
+        flash('Invalid username or password.')
 
-	return render_template('auth/login.html', title = 'Login')
+    return render_template('auth/login.html', title = 'Login')
 
 
 @auth.route('/logout')
@@ -49,17 +49,22 @@ def logout():
 def register():
 
     if request.method == 'POST':
-        user = User(email= request.form['email'], username = request.form['username'], password = request.form['password'])
-        db.session.add(user)
-        db.session.commit()
-        token = user.generate_confirmation_token()
-        send_email(user.email, 'Confirm Your Account',
-                   'auth/email/confirm', user=user, token=token)
-        flash('A confirmation email has been sent to you by email.')
-        return redirect(url_for('auth.login'))
-
-        return redirect(url_for('auth.login'))
+        user = User.query.filter_by(email=request.form['email']).first()
+        if user.email == request.form['email']:
+            token = user.generate_confirmation_token()
+            flash('This email now register!')
+            return redirect(url_for('auth.login'))
+        else:
+            user = User(email= request.form['email'], username = request.form['username'], password = request.form['password'])
+            db.session.add(user)
+            db.session.commit()
+            token = user.generate_confirmation_token()
+            send_email(user.email, 'Confirm Your Account',
+                       'auth/email/confirm', user=user, token=token)
+            flash('A confirmation email has been sent to you by email.')
+            return redirect(url_for('auth.login'))
     return render_template('auth/register.html', title = 'Registration')
+
 
 
 @auth.route('/confirm/<token>')

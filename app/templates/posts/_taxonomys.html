@@ -1,0 +1,31 @@
+<ul class="posts">
+	{% for tax in taxonomy %}
+		<li class="post">
+			<div class="profile-thumbnail">
+				<a href="{{ url_for('.user', username=tax.author.username) }}">
+					<img class="img-rounded profile-thumbnail" src="{{ tax.author.gravatar(size=40) }}">
+				</a>
+			</div>
+
+			<div class="post-author">
+				<a href="{{ url_for('.user', username=tax.author.username) }}">
+					{{ tax.author.username }}
+				</a>
+			</div>
+			<div class="post-body">{{ tax.category }}</div>
+			<div class="post-footer">
+				{% if current_user == tax.author %}
+					<a href="{{ url_for('.edit_tax', id=tax.id) }}">
+						<span class="label label-primary">Edit</span>
+					</a>
+
+					<a href="{{ url_for('.del_tax', id=tax.id) }}">
+						<span class="label label-danger">Del</span>
+					</a>
+				{% endif %}
+
+
+			</div>
+		</li>
+	{% endfor %}
+</ul>

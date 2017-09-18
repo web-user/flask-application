@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Flasky - Edit Post{% endblock %}
+{% block page_content %}
+<div class="page-header">
+<h1>Edit Post</h1>
+</div>
+<div>
+{% block content %}
+    <div class="container">
+	<form role="form" method="POST">
+
+		<div class="form-group">
+			<label for="inputName" class="control-label">Edit post</label>
+			<textarea class="form-control" name="category"> {{ category }} </textarea>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</div>
+	</form>
+    </div>
+{% endblock %}
+</div>
+{% endblock %}
+{%block scripts %}
+{{super() }}
+{{ pagedown.include_pagedown() }}
+{%endblock %}

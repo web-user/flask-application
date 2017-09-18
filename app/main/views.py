@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for, request, f
 from flask_login import login_required, current_user
 from . import main
 from .. import db
-from ..models import Permission, Role, User, Post, Comment
+from ..models import Permission, Role, User, Post, Comment, Taxonomy
 from ..decorators import admin_required, permission_required
 
 @main.route('/', methods = ['GET', 'POST'])
@@ -88,7 +88,48 @@ def edit_profile_admin(id):
 @main.route('/post/<int:id>')
 def post(id):
 	post = Post.query.get_or_404(id)
-	return render_template('post.html', posts=[post], id = id)
+	return render_template('posts/post.html', posts=[post], id = id)
+
+
+@main.route('/taxonomy', methods=['POST', 'GET'])
+def taxonomy():
+	if current_user.can(Permission.WRITE_ARTICLES) and request.method == 'POST':
+		taxonom = Taxonomy(category=request.form['category'], author=current_user._get_current_object())
+		db.session.add(taxonom)
+		return redirect(url_for('.taxonomy'))
+	taxonomy = Taxonomy.query.order_by(Taxonomy.timestamp.desc()).all()
+	return render_template('posts/taxonomy.html', taxonomy=taxonomy)
+
+@main.route('/edit-tax/<int:id>', methods=['POST', 'GET'])
+@login_required
+def edit_tax(id):
+	tax = Taxonomy.query.get_or_404(id)
+	if current_user != tax.author and \
+		not current_user.can(Permission.ADMINISTER):
+		abort(403)
+	if request.method == 'POST':
+		tax.category = request.form['category']
+
+		db.session.add(tax)
+		flash('The category has been updated.')
+		return redirect(url_for('.taxonomy', id=tax.id))
+
+	category = tax.category
+	return render_template('edit_taxonomy.html', category = category )
+
+
+@main.route('/del-tax/<int:id>', methods=['GET'])
+@login_required
+def del_tax(id):
+	tax = Taxonomy.query.get_or_404(id)
+	if request.method == 'GET':
+		db.session.delete(tax)
+		flash('The category has been delete.')
+		return redirect(url_for('.taxonomy'))
+
+
+
+
 
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required

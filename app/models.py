@@ -75,6 +75,7 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    taxonomy = db.relationship('Taxonomy', backref='author', lazy='dynamic')
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
@@ -348,25 +349,31 @@ class Taxonomy(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     category  = db.Column(db.Text)
     tag = db.Column(db.Text)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
 
     def to_json(self):
         json_taxonomy = {
             'url': url_for('api.get_taxonomy', id=self.id, _external=True),
             'post': url_for('api.get_post', id=self.post_id, _external=True),
             'category': self.category,
-            'tag': self.tag,
+            'timestamp': self.timestamp,
             'author': url_for('api.get_user', id=self.author_id, _external=True),
+            'tag': self.tag,
         }
         return json_taxonomy
+
     @staticmethod
-    def from_json(json_taxonomy):
+    def from_json(json_post):
         category = json_taxonomy.get('category')
         if category is None or category == '':
-            raise ValidationError('comment does not have a body')
+            raise ValidationError('post does not have a category')
         return Taxonomy(category=category)
 
-db.event.listen(Taxonomy.category, 'set', Taxonomy.tag)
+
+# db.event.listen(Taxonomy.category, 'set', Taxonomy.tag)
 
 
 class Comment(db.Model):

@@ -3,28 +3,25 @@
 {% block content %}
 	<div class="container">
 		<div class="page-header">
-			<h1><h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1></h1>
+			<h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-			{{current_user.can(Permission.WRITE_ARTICLES)}}
 				{% if current_user.can(Permission.WRITE_ARTICLES) %}
 
 					<form role="form" method="POST" data-toggle="validator">
 						<div class="form-group">
 							<label for="inputName" class="control-label">About Me</label>
-							<textarea class="form-control" name="body" required></textarea>
+							<textarea class="form-control" name="category" required></textarea>
 						</div>
 						<div class="form-group">
 							<button type="submit" class="btn btn-primary">Submit</button>
 						</div>
 					</form>
-
+					{% include 'posts/_taxonomys.html' %}
+				{% else %}
+					<h2>Permission Denied</h2>
 				{% endif %}
-				{% include 'posts/_posts.html' %}
-				<div class="pagination">
-					{{ macros.pagination_widget(pagination, '.index') }}
-				</div>
 
 
 			</div>
