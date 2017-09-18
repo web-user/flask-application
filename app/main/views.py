@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect, url_for, request, flash, abort, current_app
+from flask import Flask, render_template, session, redirect, url_for, request, flash, abort, current_app, make_response
 from flask_login import login_required, current_user
 from . import main
 from .. import db
@@ -230,3 +230,4 @@ def unfollow(username):
 	current_user.unfollow(user)
 	flash('You are not following %s anymore.' % username)
 	return redirect(url_for('.user', username=username))
+
